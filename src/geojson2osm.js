@@ -58,10 +58,14 @@ geojson2osm.geojson2osm = function(geojson) {
     for (var attrb in properties) {
       if (attrb.indexOf('@') > -1) {
         if (attrb === '@timestamp') {
-          var date = new Date(properties[attrb] * 1000);
-          attributes += attrb.replace('@', '') + '="' + date.toISOString() + '" ';
+          if (typeof attrb !== 'string') {
+            var date = new Date(properties[attrb] * 1000);
+            attributes += attrb.replace('@', '') + '="' + date.toISOString() + '" ';
+          } else {
+            attributes += attrb.replace('@', '') + '="' + properties[attrb] + '" ';
+          }
         } else if (attrb === '@id') {
-          attributes += attrb.replace('@', '') + '="' + properties[attrb] + '" ';
+          attributes += attrb.replace('@', '') + '="' + properties[attrb].replace('node/', '').replace('way/', '').replace('relation/', '') + '" ';
           hasId = true;
         } else if (attrb === '@changeset') {
           attributes += attrb.replace('@', '') + '="' + properties[attrb] + '" ';
